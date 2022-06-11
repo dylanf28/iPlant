@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>iPlant</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="static/styling.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif}
+.w3-bar,h1,button {font-family: "Montserrat", sans-serif}
+.fa-anchor,.fa-coffee {font-size:200px}
+</style>
+<!--
+<script type="text/javascript">
+  var ws = null;
+  function init() {
+      if ("WebSocket" in window) {
+          ws = new WebSocket("ws://10.0.0.15:8888/socket");
+          ws.onopen = function() {
+              console.log("Connection is opened");
+          }
+          ws.onclose = function() {
+              console.log("Connection is closed");
+          }
+          ws.onmessage = function(msg) {
+              document.getElementById("most_recent_sensor_readings").innerHTML = msg.data;
+          }    
+      } else {
+          console.log('Your browser does not support WebSocket!')
+      }
+  }
+  </script>
+-->
+<!-- script to display the most recent sensor readings -->
+   <!--
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+   <script type="text/javascript">
+      google.charts.load('current', {'packages':['gauge']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Light ', 80],
+          ['Temp', 55],
+          ['Humidity', 68],
+          ['Moisture', 68]
+        ]);
+
+        var options = {
+          width: 400, height: 120,
+          redFrom: 90, redTo: 100,
+          yellowFrom:75, yellowTo: 90,
+          minorTicks: 5
+        };
+
+        var chart = new google.visualization.Gauge(document.getElementById('most_recent_sensor_readings'));
+
+        chart.draw(data, options);
+
+        setInterval(function() {
+          data.setValue(0, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 13000);
+        setInterval(function() {
+          data.setValue(1, 1, 40 + Math.round(60 * Math.random()));
+          chart.draw(data, options);
+        }, 5000);
+        setInterval(function() {
+          data.setValue(2, 1, 60 + Math.round(20 * Math.random()));
+          chart.draw(data, options);
+        }, 26000);
+      }
+    </script>
+  -->
+  
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      
+      var ws = null;
+      function init() {
+        if ("WebSocket" in window) {
+            ws = new WebSocket("ws://10.0.0.14:8888/socket");
+            ws.onopen = function() {
+                console.log("Connection is opened");
+            }
+            ws.onclose = function() {
+                console.log("Connection is closed");
+            }
+            ws.onmessage = function(msg) {
+                //google.charts.setOnLoadCallback(drawChart(msg.data));
+                //message_dict =JSON.parse(msg.data)
+                document.getElementById("most_recent_sensor_readings").innerHTML = msg.data;
+
+            }  
+            
+        } else {
+            console.log('Your browser doenst support WebSocket!')
+        }
+      }  
+             
+      function drawChart(message) {
+        message_dict =JSON.parse(message);
+        var light_intesity_data = google.visualization.arrayToDataTable(message_dict["light_intensity"]);
+        var temperature_data = google.visualization.arrayToDataTable(message_dict["temperature"]);
+        var humidity_data = google.visualization.arrayToDataTable(message_dict["humidity"]);
+        var soil_moisture_data = google.visualization.arrayToDataTable(message_dict["soil_moisture"]);
+
+        var options = {
+          title: 'Soil Moisture',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var light_intensity_chart = new google.visualization.LineChart(document.getElementById('light_intensity'));
+        
+        var temperature_chart = new google.visualization.LineChart(document.getElementById('temperature'));
+          
+        var humidity_chart = new google.visualization.LineChart(document.getElementById('humidity'));
+          
+        var soil_moisture_chart = new google.visualization.LineChart(document.getElementById('soil_moisture'));
+          
+
+        light_intensity_chart.draw(light_intesity_data, options);
+        temperature_chart.draw(temperature_data, options);
+        humidity_chart.draw(humidity_data, options);
+        soil_moisture_chart.draw(soil_moisture_data, options);
+      }
+    </script>
+  
+</head>
+<body onload="init();">
+
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-red w3-card w3-left-align w3-large">
+    <a class="w3-bar-item w3-button w3-hide-medium w3-hide-large w3-right w3-padding-large w3-hover-white w3-large w3-red" href="javascript:void(0);" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="/about" class="w3-bar-item w3-button w3-hide-small w3-padding-large w3-hover-white">Home</a>
+    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-white">My Plant</a>
+  </div>
+
+  <!-- Navbar on small screens -->
+  <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium w3-large">
+    <a href="/about" class="w3-bar-item w3-button w3-padding-large">Home</a>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-container w3-red w3-center" style="padding:128px 16px">
+  <h1 class="w3-margin w3-jumbo">iPlant Sensor Readings</h1>
+   <!-- <div id="most_recent_sensor_readings" style="align-content: : center"></div>-->
+</header>
+
+<!-- First Grid -->
+<div class="w3-row-padding w3-padding-64 w3-container">
+  <div class="w3-content">
+    <h1>Sensor Readings</h1>
+    <div id="most_recent_sensor_readings"></div>
+    
+    
+    <div class="w3-half">
+        <div id="light_intensity" style="width: 98%; height: 50%"></div>
+    </div>
+    <!--
+    <div class="w3-half w3-center">
+      <div id="temperature" style="width: 98%; height: 50%"></div>
+    </div>
+    <div class="w3-half">
+        <div id="humidity" style="width: 98%; height: 50%"></div>
+    </div>
+    <div class="w3-half w3-center">
+      <div id="soil_moisture" style="width: 98%; height: 50%"></div>
+    </div>
+    -->
+  </div>
+</div>
+
+<div class="w3-container w3-black w3-center w3-opacity w3-padding-64">
+    <h1 class="w3-margin w3-xlarge">Let's Change the World with iPlant!</h1>
+</div>
+
+<!-- Footer -->
+<footer class="w3-container w3-padding-64 w3-center w3-opacity">  
+  <div class="w3-xlarge w3-padding-32">
+    <i class="fa fa-facebook-official w3-hover-opacity"></i>
+    <i class="fa fa-instagram w3-hover-opacity"></i>
+    <i class="fa fa-snapchat w3-hover-opacity"></i>
+    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+    <i class="fa fa-twitter w3-hover-opacity"></i>
+    <i class="fa fa-linkedin w3-hover-opacity"></i>
+ </div>
+ <p>Powered by <a href="#" target="_blank">iPlant</a></p>
+</footer>
+
+<script>
+// Used to toggle the menu on small screens when clicking on the menu button
+function myFunction() {
+  var x = document.getElementById("navDemo");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+  }
+}
+</script>
+
+</body>
+</html>

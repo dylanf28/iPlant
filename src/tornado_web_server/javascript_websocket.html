@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>Websocket</title>
+    <script type="text/javascript">
+    var ws = null;
+    function init() {
+        if ("WebSocket" in window) {
+            ws = new WebSocket("ws://10.0.0.14:8888/socket");
+            ws.onopen = function() {
+                console.log("Connection is opened");
+            }
+            ws.onclose = function() {
+                console.log("Connection is closed");
+            }
+            ws.onmessage = function(msg) {
+                document.getElementById("readings").innerHTML = msg.data;
+            }    
+        } else {
+            console.log('Your browser doenst support WebSocket!')
+        }
+    }
+    </script>
+</head>
+<body onload="init();">
+    <h2>Sensor Readings</h2>
+    <p id="readings"></p>  
+</body>
+</html>

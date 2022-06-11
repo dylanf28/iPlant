@@ -1,0 +1,10 @@
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
+{"api_key":"1234","username":"BME280"}
